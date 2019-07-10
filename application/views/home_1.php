@@ -1,0 +1,1 @@
+ 111.111 * DEGREES(ACOS(COS(RADIANS(s_lat)) * COS(RADIANS(:latitude))* COS(RADIANS(s_lng - :longitude))+ SIN(RADIANS(s_lat))* SIN(RADIANS(:latitude)))) AS distance_in_km
