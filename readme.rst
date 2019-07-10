@@ -1,5 +1,5 @@
 ###################
-Class Apart Store Ecom Using CodeIgniter
+Chain Reaction App Using CodeIgniter
 ###################
 
 CodeIgniter is an Application Development Framework - a toolkit - for people
