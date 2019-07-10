@@ -20,19 +20,59 @@ class Shop extends CI_Controller {
     }
 
     public function index() {
-        if (isset($_POST['submit'])) {
-            $off_drive = array(
-                'user_name' => $this->input->post('person_name'),
-                'contact_no' => $this->input->post('contact_no'),
-                'vehicle_name' => $this->input->post('vehicle_name'),
-                'vehicle_no' => $this->input->post('vehicle_no'),
-            );
+        $data = array("gameinit" => "false");
+        $player_color_array = array(
+            "player1" => "red",
+            "player2" => "green",
+            "player3" => "blue",
+            "player4" => "yellow",
+            "player5" => "purple",
+        );
+        $atom_array = array(
+            "3" => "3x",
+            "4" => "2x",
+            "5" => "1x",
+            "6" => "1x",
+        );
 
-            $this->db->insert('offer_drive', $off_drive);
+        $game = array("row" => "",
+            "col" => "",
+            "atom_size" => "3x",
+            "indexgame" => array(),
+            "gamemove" => array(),
+            "gamemovelist" => array(),
+            "players" => array(),
+            "moveselect" => [],
+            "movelist" => [],
+            "selectedPlayer" => "player1",
+            "selectedColor" => "",
+            "nextColor" => "red",
+            "colwidth" => "",
+            "winner" => "",
+            "message" => ""
+        );
+
+
+        if (isset($_GET['start_game'])) {
+            $matrix = $this->input->get('matrix');
+            $game["row"] = $matrix;
+            $game["col"] = $matrix;
+
+            $game["atom_size"] = $atom_array[$matrix];
+
+            $players = $this->input->get('players');
+
+            $payers = array();
+            for ($i = 1; $i <= $players; $i++) {
+                $game["players"]["player" . $i] = $player_color_array["player" . $i];
+                array_push($game["moveselect"], "player" . $i);
+            }
+            $data['gameinit'] = "true";
         }
-
-
-        $this->load->view('home');
+        
+        
+        $data["gamearray"] = json_encode($game);
+        $this->load->view('home', $data);
     }
 
     function _sendsms($message, $mobile_no) {
@@ -108,8 +148,8 @@ class Shop extends CI_Controller {
         }
         $latitude = $latitude ? $latitude : 22.6794104;
         $longitude = $longitude ? $longitude : 75.8212206;
-        $distance = $distance ?$distance:10;
-        
+        $distance = $distance ? $distance : 10;
+
         $squery = "select * from (SELECT of.*,  111.111 * DEGREES(ACOS(COS(RADIANS(s_lat)) * COS(RADIANS($latitude))* COS(RADIANS(s_lng - $longitude))+ SIN(RADIANS(s_lat))* SIN(RADIANS($latitude)))) AS distance_in_km,"
                 . " IF((select st.offer_drive_id from confirn_pick_drive as st where st.user_id = " . $this->user_id . " and st.offer_drive_id = of.id ), 1, 0) as stat "
                 . "FROM `offer_drive` as of ) as a "

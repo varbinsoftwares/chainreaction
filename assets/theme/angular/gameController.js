@@ -2,6 +2,15 @@
  Shop Cart product controllers
  */
 App.controller('gameController', function ($scope, $http, $timeout, $interval, $filter) {
+    if (gamestart==false) {
+        $("#gameInitModal").modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    $scope.matrix = gameArray;
+
     function checkConverIndex(inumber) {
         if (inumber > (-1)) {
             var indchanges = "" + (inumber < 10 ? "0" + inumber : inumber);
@@ -40,23 +49,7 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
 
 
 
-    $scope.matrix = {
-        "row": 3,
-        "col": 3,
-        "atom_size":"3x",
-        "indexgame": {},
-        "gamemove": {},
-        "gamemovelist": {},
-        "players": {"p1": "red", "p2": "blue", "p3": "green", "p4": "orange"},
-        "moveselect": ["p1", "p2", "p3", "p4"],
-        "movelist": [],
-        "selectedPlayer": "p1",
-        "selectedColor": "",
-        "nextColor": "red",
-        "colwidth": "",
-        "winner":"",
-        "message":""
-    };
+
 
     $timeout(function () {
         $(".indexclass").each(function () {
@@ -68,7 +61,7 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
             $scope.matrix.gamemove["" + this.id] = [];
             $scope.matrix.gamemovelist["" + this.id] = [];
         });
-        var maxwidth = $("table").width() - 20;
+        var maxwidth = $("table").width() - 50;
         var divider = $scope.matrix.col;
         $scope.matrix.colwidth = (maxwidth / divider);
     });
@@ -134,10 +127,10 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         var color = $scope.matrix.players[player];
         if (color_t) {
             if (color != color_t) {
-            
+
                 $scope.matrix.message = "bounceInUp";
-                $timeout(function(){
-                   $scope.matrix.message = "bounceOutDown"; 
+                $timeout(function () {
+                    $scope.matrix.message = "bounceOutDown";
                 }, 1000)
             } else {
                 $scope.gameMove(player, move, color)
