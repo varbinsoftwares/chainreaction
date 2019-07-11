@@ -42,6 +42,8 @@ class Shop extends CI_Controller {
             "gamemove" => array(),
             "gamemovelist" => array(),
             "players" => array(),
+            "color_players" => array(),
+            "colors"=>[],
             "moveselect" => [],
             "movelist" => [],
             "selectedPlayer" => "player1",
@@ -65,7 +67,9 @@ class Shop extends CI_Controller {
             $payers = array();
             for ($i = 1; $i <= $players; $i++) {
                 $game["players"]["player" . $i] = $player_color_array["player" . $i];
+                $game["color_players"][$player_color_array["player" . $i]] = "player" . $i;
                 array_push($game["moveselect"], "player" . $i);
+                array_push($game["colors"], $player_color_array["player" . $i]);
             }
             $data['gameinit'] = "true";
         }

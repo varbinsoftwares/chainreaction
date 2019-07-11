@@ -2,7 +2,7 @@
  Shop Cart product controllers
  */
 App.controller('gameController', function ($scope, $http, $timeout, $interval, $filter) {
-    if (gamestart==false) {
+    if (gamestart == false) {
         $("#gameInitModal").modal({
             keyboard: false,
             backdrop: false
@@ -66,33 +66,58 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         $scope.matrix.colwidth = (maxwidth / divider);
     });
 
+
+    $scope.removeNoColor = function (checkcolor) {
+        
+       var output =  $scope.matrix.colors.filter((e, i, l)=>checkcolor.indexOf(e)==(-1))
+       if(output){
+           
+       }
+          console.log(output);
+    }
+
+    $scope.checkWinnerOrMove = function (c_siblings, count, color) {
+        var checklist = [];
+        for (gm in $scope.matrix.gamemove) {
+            var gmindlist = $scope.matrix.gamemove[gm];
+            checklist = checklist.concat(gmindlist);
+        }
+        var checkcolor = checklist.filter((x, i, a) => a.indexOf(x) == i);
+        if (checkcolor.length == 1) {
+            $scope.matrix.winner = checkcolor[0];
+        } else {
+            $scope.removeNoColor(checkcolor);
+            $scope.checkMove(c_siblings[count], color);
+        }
+    }
+
+    $scope.siblingsCheck = function (c_siblings, color, count) {
+        console.log(c_siblings, count, c_siblings.length);
+        if (count < c_siblings.length) {
+            var tempc = [];
+            var tempclen = $scope.matrix.gamemove[c_siblings[count]].length;
+            for (i = 0; i < tempclen; i++) {
+                tempc.push(color);
+            }
+            $scope.matrix.gamemove[c_siblings[count]] = tempc;
+            $scope.matrix.gamemove[c_siblings[count]].push(color);
+            $scope.checkWinnerOrMove(c_siblings, count, color);
+            count += 1;
+            $scope.siblingsCheck(c_siblings, color, count);
+
+        }
+    }
+
+
     $scope.checkMove = function (moveind, color) {
         var countmove = $scope.matrix.gamemove[moveind].length;
         var limit = $scope.matrix.indexgame[moveind].limit;
         if (limit == countmove) {
             $scope.matrix.gamemove[moveind] = [];
             var siblings = $scope.matrix.indexgame[moveind].siblings;
-            for (sb in siblings) {
-                var tempc = [];
-                var tempclen = $scope.matrix.gamemove[siblings[sb]].length;
-                for (i = 0; i < tempclen; i++) {
-                    tempc.push(color);
-                }
-                $scope.matrix.gamemove[siblings[sb]] = tempc;
-                $scope.matrix.gamemove[siblings[sb]].push(color);
-                var checklist = [];
-                for (gm in $scope.matrix.gamemove) {
-                    var gmindlist = $scope.matrix.gamemove[gm];
-                    checklist = checklist.concat(gmindlist);
-                }
-                var checkcolor = checklist.filter((x, i, a) => a.indexOf(x) == i);
-                if (checkcolor.length == 1) {
-                    $scope.matrix.winner = checkcolor[0];
-                    break;
-                } else {
-                    $scope.checkMove(siblings[sb], color);
-                }
-            }
+
+            $scope.siblingsCheck(siblings, color, 0);
+
         }
     }
 
