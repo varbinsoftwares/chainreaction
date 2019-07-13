@@ -54,9 +54,8 @@ $this->load->view('layout/header');
 
 
     <div class="container">
-
-
-        <table class=" matrixtable animated bounceInUp">
+        <div class="col-md-4">
+            <table class=" matrixtable animated bounceInUp">
             <tr ng-repeat="row in []| range:matrix.row">
                 <td ng-repeat="col in []| range: matrix.col" id="{{$parent.$index}}{{$index}}" indexattr ="{{$parent.$index}}{{$index}}"  class="button button-small button-positive indexclass text-center" style="border: 3px solid {{matrix.nextColor}};">
                     <span style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</span>
@@ -80,9 +79,16 @@ $this->load->view('layout/header');
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong style="color:white">Invalid Move</strong> 
         </div>
+        </div>
+        <div class="col-md-7">
+              {{matrix}}
+        </div>
+
+
         
         
-   
+        
+ 
 
 
     </div>

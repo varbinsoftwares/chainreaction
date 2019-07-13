@@ -68,12 +68,36 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
 
 
     $scope.removeNoColor = function (checkcolor) {
-        
-       var output =  $scope.matrix.colors.filter((e, i, l)=>checkcolor.indexOf(e)==(-1))
-       if(output){
-           
-       }
-          console.log(output);
+
+        var output = $scope.matrix.colors.filter((e, i, l) => checkcolor.indexOf(e) == (-1))
+
+        if (output.length) {
+            console.log(output);
+            var color = output[0];
+            console.log(color);
+            var player = $scope.matrix.color_players[color];
+            console.log(player);
+            console.log($scope.matrix.players[player]);
+            delete $scope.matrix.players[player];
+            var npindex = $scope.matrix.colors.indexOf(color);
+            $scope.matrix.moveselect.splice(npindex, 1);
+            console.log(player,$scope.matrix.selectedPlayer)
+            if (player == $scope.matrix.selectedPlayer) {
+                var npindex = $scope.matrix.colors.indexOf(color);
+                console.log(npindex, $scope.matrix.colors, checkcolor);
+                var playerlist = $scope.matrix.moveselect;
+
+                var nindexp = npindex + 1;
+                if (nindexp == playerlist.length) {
+                    nindexp = 0;
+                }
+                $scope.matrix.selectedPlayer = playerlist[nindexp];
+                $scope.matrix.nextColor = $scope.matrix.players[$scope.matrix.selectedPlayer];
+            }
+        }
+
+
+        console.log(output);
     }
 
     $scope.checkWinnerOrMove = function (c_siblings, count, color) {
