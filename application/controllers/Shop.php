@@ -43,7 +43,7 @@ class Shop extends CI_Controller {
             "gamemovelist" => array(),
             "players" => array(),
             "color_players" => array(),
-            "colors"=>[],
+            "colors" => [],
             "moveselect" => [],
             "movelist" => [],
             "selectedPlayer" => "player1",
@@ -51,7 +51,8 @@ class Shop extends CI_Controller {
             "nextColor" => "red",
             "colwidth" => "",
             "winner" => "",
-            "message" => ""
+            "message" => "",
+            "game_player" => array(),
         );
 
 
@@ -68,13 +69,17 @@ class Shop extends CI_Controller {
             for ($i = 1; $i <= $players; $i++) {
                 $game["players"]["player" . $i] = $player_color_array["player" . $i];
                 $game["color_players"][$player_color_array["player" . $i]] = "player" . $i;
+                $game["game_player"][$player_color_array["player" . $i]] = array(
+                    "player" => "player" . $i,
+                    "status" => "active",
+                );
                 array_push($game["moveselect"], "player" . $i);
                 array_push($game["colors"], $player_color_array["player" . $i]);
             }
             $data['gameinit'] = "true";
         }
-        
-        
+
+
         $data["gamearray"] = json_encode($game);
         $this->load->view('home', $data);
     }

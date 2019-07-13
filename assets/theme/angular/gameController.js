@@ -26,7 +26,6 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
     $scope.getSiblings = function (ind1) {
         var sublings = [];
         var strind = Number(ind1);
-        console.log(strind);
         var su = checkConverIndex(strind - 10);
         if (su) {
             sublings.push(su);
@@ -72,32 +71,36 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         var output = $scope.matrix.colors.filter((e, i, l) => checkcolor.indexOf(e) == (-1))
 
         if (output.length) {
-            console.log(output);
-            var color = output[0];
-            console.log(color);
-            var player = $scope.matrix.color_players[color];
-            console.log(player);
-            console.log($scope.matrix.players[player]);
-            delete $scope.matrix.players[player];
-            var npindex = $scope.matrix.colors.indexOf(color);
-            $scope.matrix.moveselect.splice(npindex, 1);
-            console.log(player,$scope.matrix.selectedPlayer)
-            if (player == $scope.matrix.selectedPlayer) {
-                var npindex = $scope.matrix.colors.indexOf(color);
-                console.log(npindex, $scope.matrix.colors, checkcolor);
-                var playerlist = $scope.matrix.moveselect;
-
-                var nindexp = npindex + 1;
-                if (nindexp == playerlist.length) {
-                    nindexp = 0;
-                }
-                $scope.matrix.selectedPlayer = playerlist[nindexp];
-                $scope.matrix.nextColor = $scope.matrix.players[$scope.matrix.selectedPlayer];
+            for (cl in output) {
+                var tcolor = output[cl];
+                var tnpindex = $scope.matrix.colors.indexOf(tcolor);
+                $scope.matrix.game_player[tcolor].status = "removed";
+                var tplayer = $scope.matrix.color_players[tcolor];
+                delete $scope.matrix.players[tplayer];
             }
+            var ctemp = [];
+            for (cc in checkcolor) {
+                var ccolor = checkcolor[cc];
+                var cplayer = $scope.matrix.color_players[ccolor];
+                ctemp.push(cplayer);
+            }
+            $scope.matrix.moveselect = ctemp;
+
+            var c_color = $scope.matrix.selectedColor;
+            var player = $scope.matrix.color_players[c_color];
+            var npindex = $scope.matrix.colors.indexOf(c_color);
+
+            var npindex = checkcolor.indexOf(c_color);
+            var playerlist = $scope.matrix.moveselect;
+
+            var nindexp = npindex + 1;
+            if (nindexp == checkcolor.length) {
+                nindexp = 0;
+            }
+            $scope.matrix.selectedPlayer = playerlist[nindexp];
+
+            $scope.matrix.nextColor = $scope.matrix.players[$scope.matrix.selectedPlayer];
         }
-
-
-        console.log(output);
     }
 
     $scope.checkWinnerOrMove = function (c_siblings, count, color) {
@@ -109,6 +112,16 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         var checkcolor = checklist.filter((x, i, a) => a.indexOf(x) == i);
         if (checkcolor.length == 1) {
             $scope.matrix.winner = checkcolor[0];
+            $scope.matrix.nextColor = $scope.matrix.winner;
+            var wplayer = $scope.matrix.color_players[$scope.matrix.winner];
+            var templist = $scope.matrix.moveselect;
+
+            templist.splice(wplayer, 1);
+            if (templist) {
+                var tcolor = $scope.matrix.players[templist[0]];
+                $scope.matrix.game_player[tcolor].status = "removed";
+            }
+
         } else {
             $scope.removeNoColor(checkcolor);
             $scope.checkMove(c_siblings[count], color);
@@ -116,7 +129,7 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
     }
 
     $scope.siblingsCheck = function (c_siblings, color, count) {
-        console.log(c_siblings, count, c_siblings.length);
+
         if (count < c_siblings.length) {
             var tempc = [];
             var tempclen = $scope.matrix.gamemove[c_siblings[count]].length;
@@ -174,18 +187,22 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         var move = in1 + "" + in2;
         var player = $scope.matrix.selectedPlayer;
         var color = $scope.matrix.players[player];
-        if (color_t) {
-            if (color != color_t) {
+        if ($scope.matrix.winner) {
+            $scope.matrix.nextColor = $scope.matrix.winner;
+        } else {
+            if (color_t) {
+                if (color != color_t) {
 
-                $scope.matrix.message = "bounceInUp";
-                $timeout(function () {
-                    $scope.matrix.message = "bounceOutDown";
-                }, 1000)
+                    $scope.matrix.message = "bounceInUp";
+                    $timeout(function () {
+                        $scope.matrix.message = "bounceOutDown";
+                    }, 1000)
+                } else {
+                    $scope.gameMove(player, move, color)
+                }
             } else {
                 $scope.gameMove(player, move, color)
             }
-        } else {
-            $scope.gameMove(player, move, color)
         }
     }
 

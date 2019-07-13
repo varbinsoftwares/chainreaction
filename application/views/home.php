@@ -21,17 +21,19 @@ $this->load->view('layout/header');
         /* position: absolute; */
         margin-left: -13px;
         display: none;
+        border: 1px solid #000;
+        border-radius: 50%;
     }
     .indexclass i:nth-child(3) {
-        position: absolute;
-        /* margin-left: -35px; */
-        /*margin-top: 22px;*/
+
+        margin-left: -5px; 
+
         display: inline;
-        /*left: 48%;*/
+
     }
     .indexclass i:nth-child(2) {
 
-        margin-left: -10px;
+        margin-left: -5px;
         display: inline;
 
     }
@@ -47,6 +49,14 @@ $this->load->view('layout/header');
         padding: 5px;
         text-align: center;
         text-transform: capitalize;
+            text-shadow: 0px 0px 5px #000;
+    }
+    .playerlist{
+        background: #fff;
+        padding: 0px 20px;
+    }
+    span.playerlist.removed {
+        text-decoration: line-through;
     }
 </style>
 <!--Services-->
@@ -56,39 +66,47 @@ $this->load->view('layout/header');
     <div class="container">
         <div class="col-md-4">
             <table class=" matrixtable animated bounceInUp">
-            <tr ng-repeat="row in []| range:matrix.row">
-                <td ng-repeat="col in []| range: matrix.col" id="{{$parent.$index}}{{$index}}" indexattr ="{{$parent.$index}}{{$index}}"  class="button button-small button-positive indexclass text-center" style="border: 3px solid {{matrix.nextColor}};">
-                    <span style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</span>
-                    <span ng-click="getIndex($parent.$index, $index, checkcolor)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
-                        <i class="fa fa-circle fa-{{matrix.atom_size}} animated zoomIn delay-2s" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="color:{{checkcolor}};line-height: {{matrix.colwidth}}px;"></i>
-                    </span>
-                </td>    
-            </tr>
+                <tr ng-repeat="row in []| range:matrix.row">
+                    <td ng-repeat="col in []| range: matrix.col" id="{{$parent.$index}}{{$index}}" indexattr ="{{$parent.$index}}{{$index}}"  class="button button-small button-positive indexclass text-center" style="border: 3px solid {{matrix.nextColor}};">
+                        <span style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</span>
+                        <span ng-click="getIndex($parent.$index, $index, checkcolor)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
+                            <i class="fa fa-circle fa-{{matrix.atom_size}} animated zoomIn delay-2s" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="color:{{checkcolor}};line-height: {{matrix.colwidth}}px;"></i>
+                        </span>
+                    </td>    
+                </tr>
 
-        </table>
-        <h2 class="winner_class"  style="background:{{matrix.winner}};color:white;">{{matrix.winner}} Winner <br/>
-            <center>
-                <button class="btn btn-default" ng-if="matrix.winner" onclick="window.location.reload()"><i class="fa fa-refresh"></i> Replay</button>
-                <button class="btn btn-default" onclick="window.location = '<?php echo site_url("/"); ?>'"><i class="fa fa-refresh"></i> Reset</button>
+            </table>
+            <h2 class="winner_class"  style="background:{{matrix.winner}};color:white;">{{matrix.winner}} Winner <br/>
+                <center>
+                    <button class="btn btn-default" ng-if="matrix.winner" onclick="window.location.reload()"><i class="fa fa-refresh"></i> Replay</button>
+                    <button class="btn btn-default" onclick="window.location = '<?php echo site_url("/"); ?>'"><i class="fa fa-refresh"></i> Reset</button>
 
-            </center>
+                </center>
 
-        </h2>
+            </h2>
 
-        <div class="alert alert-warning alert-dismissible animated {{matrix.message}}" role="alert" ng-if="matrix.message" style="background: red">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong style="color:white">Invalid Move</strong> 
-        </div>
+            <div class="alert alert-warning alert-dismissible animated {{matrix.message}}" role="alert" ng-if="matrix.message" style="background: red">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong style="color:white">Invalid Move</strong> 
+            </div>
         </div>
         <div class="col-md-7">
-              {{matrix}}
+            <ul class="list-group">
+                <li class="list-group-item" style="background:{{k}};padding: 0px;" ng-repeat="(k, v) in matrix.game_player" ng-if="v.status=='active'"><span class="playerlist {{v.status}}">{{v.player}}</span></li>
+                <li class="list-group-item" style="background:{{k}};padding: 0px;" ng-repeat="(k, v) in matrix.game_player" ng-if="v.status!='active'"><span class="playerlist {{v.status}}">{{v.player}}</span></li>
+
+            </ul>
+
+
+            <br/>
+<!--{{matrix}}-->
         </div>
 
 
-        
-        
-        
- 
+
+
+
+
 
 
     </div>
