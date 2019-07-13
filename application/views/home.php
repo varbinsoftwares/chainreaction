@@ -69,7 +69,7 @@ $this->load->view('layout/header');
                 <tr ng-repeat="row in []| range:matrix.row">
                     <td ng-repeat="col in []| range: matrix.col" id="{{$parent.$index}}{{$index}}" indexattr ="{{$parent.$index}}{{$index}}"  class="button button-small button-positive indexclass text-center" style="border: 3px solid {{matrix.nextColor}};">
                         <span style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</span>
-                        <span ng-click="getIndex($parent.$index, $index, checkcolor)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
+                        <span class="matrix_element" ng-click="playMove($parent.$index, $index)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
                             <i class="fa fa-circle fa-{{matrix.atom_size}} animated zoomIn delay-2s" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="color:{{checkcolor}};line-height: {{matrix.colwidth}}px;"></i>
                         </span>
                     </td>    

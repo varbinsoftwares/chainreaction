@@ -38,6 +38,7 @@ class Shop extends CI_Controller {
         $game = array("row" => "",
             "col" => "",
             "atom_size" => "3x",
+            "indexes" =>[],
             "indexgame" => array(),
             "gamemove" => array(),
             "gamemovelist" => array(),
@@ -53,6 +54,7 @@ class Shop extends CI_Controller {
             "winner" => "",
             "message" => "",
             "game_player" => array(),
+            "my_player"=>"player1"
         );
 
 
