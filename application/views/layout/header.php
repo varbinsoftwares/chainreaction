@@ -26,7 +26,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <link href="<?php echo base_url(); ?>assets/theme/fonts/css/all.css" rel="stylesheet" type="text/css" media="all" /> 
 
         <!-- //font-awesome icons -->
-          <link rel="stylesheet" href="<?php echo base_url(); ?>assets/animate_1.css" />
+          <link rel="stylesheet" href="<?php echo base_url(); ?>assets/animate.css" />
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/theme/css/jquery-ui.css" />
         <!-- web-fonts -->  
         <link href="//fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">

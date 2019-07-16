@@ -101,6 +101,14 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
                 var tcolor = $scope.matrix.players[templist[0]];
                 $scope.matrix.game_player[tcolor].status = "removed";
             }
+            $timeout(function () {
+                $scope.matrix.animation = "heartBeat";
+
+                var x = document.getElementById("gamewinner");
+                if ($scope.matrix.sound == 'yes') {
+                    x.play();
+                }
+            })
         } else {
             $scope.removeNoColor(checkcolor);
             $scope.checkMove(c_siblings[count], color);
@@ -110,6 +118,9 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         if (count < c_siblings.length) {
             var tempc = [];
             var tempclen = $scope.matrix.gamemove[c_siblings[count]].length;
+
+
+
             for (i = 0; i < tempclen; i++) {
                 tempc.push(color);
             }
@@ -117,16 +128,53 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
             $scope.matrix.gamemove[c_siblings[count]].push(color);
             $scope.checkWinnerOrMove(c_siblings, count, color);
             count += 1;
+
             $scope.siblingsCheck(c_siblings, color, count);
         }
     }
     $scope.checkMove = function (moveind, color) {
         var countmove = $scope.matrix.gamemove[moveind].length;
         var limit = $scope.matrix.indexgame[moveind].limit;
+
         if (limit == countmove) {
-            $scope.matrix.gamemove[moveind] = [];
+            // $scope.matrix.gamemove[moveind] = [];
             var siblings = $scope.matrix.indexgame[moveind].siblings;
-            $scope.siblingsCheck(siblings, color, 0);
+            for (sb in siblings) {
+                var sbv = siblings[sb];
+                var spanind = Number(sb) + 1;
+
+                switch (spanind) {
+                    case 1:
+//                        $("#" + moveind + " span:nth-child(" + spanind + ")").css({"top": 120})
+
+                        break;
+                    case 2:
+//                        $("#" + moveind + " span:nth-child(" + spanind + ")").css({"left": 100})
+
+                        break;
+                    case 3:
+                        text = "Today is Sunday";
+                        break;
+                    case 4:
+                        text = "Today is Sunday";
+                        break;
+                    default:
+                        text = "Looking forward to the Weekend";
+                }
+
+            }
+            $timeout(function () {
+                $scope.matrix.gamemove[moveind] = [];
+                var siblings = $scope.matrix.indexgame[moveind].siblings;
+
+                var x = document.getElementById("gamemove");
+                if ($scope.matrix.sound == 'yes') {
+                    x.play();
+                }
+
+                $scope.siblingsCheck(siblings, color, 0);
+            }, 500)
+
         }
     }
     $scope.gameMove = function (player, move, color) {
@@ -158,6 +206,13 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         } else {
             if (color_t) {
                 if (color != color_t) {
+                    $("#" + move + " span").removeClass("zoomIn").addClass("shake").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                        $(this).removeClass("shake").addClass("zoomIn faster");
+                    });
+                    var x = document.getElementById("gameerror");
+                    if ($scope.matrix.sound == 'yes') {
+                        x.play();
+                    }
                     $scope.matrix.message = "bounceInUp";
                     $timeout(function () {
                         $scope.matrix.message = "bounceOutDown";
@@ -185,9 +240,22 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
 
         if ($scope.matrix.selectedPlayer == $scope.matrix.my_player) {
             $scope.autoMove(ind1, ind2);
+            var url = baseurl + "Api/playerMove";
+            var data = {'player': $scope.matrix.my_player, 'move': ind1 + "" + ind2, "session": "1"};
+            var fd = new FormData();
+            for (i in data) {
+                fd.append(i, data[i])
+            }
+            $http.post(url, fd).then(function () {
+
+            }, function () {
+
+            })
         }
 
     }
+
+
 
 
     $scope.getRandonItem = function () {
@@ -208,38 +276,52 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
 //    }, 1000)
 
 
+    $interval(function () {
+//        $scope.getRandonItem();
+         var url = baseurl + "Api/checkMove/"+$scope.matrix.my_player+"/1";
+        $http.get(url).then(function(rdata){
+            var gmove = rdata.data;
+            if(gmove.player == $scope.matrix.my_player){
+                
+            }
+            else{
+                
+            }
+        })
+    }, 2000)
+
 })
 
 
-function showMessage(messageHTML) {
-    $('#chat-box').append(messageHTML);
-}
-
-$(document).ready(function () {
-    var websocket = new WebSocket("ws://localhost:8090/soketMessage");
-    websocket.onopen = function (event) {
-        showMessage("<div class='chat-connection-ack'>Connection is established!</div>");
-    }
-    websocket.onmessage = function (event) {
-        var Data = JSON.parse(event.data);
-        showMessage("<div class='" + Data.message_type + "'>" + Data.message + "</div>");
-        $('#chat-message').val('');
-    };
-
-    websocket.onerror = function (event) {
-        showMessage("<div class='error'>Problem due to some Error</div>");
-    };
-    websocket.onclose = function (event) {
-        showMessage("<div class='chat-connection-ack'>Connection Closed</div>");
-    };
-
-    $('#frmChat').on("submit", function (event) {
-        event.preventDefault();
-        $('#chat-user').attr("type", "hidden");
-        var messageJSON = {
-            chat_user: $('#chat-user').val(),
-            chat_message: $('#chat-message').val()
-        };
-        websocket.send(JSON.stringify(messageJSON));
-    });
-});
+//function showMessage(messageHTML) {
+//    $('#chat-box').append(messageHTML);
+//}
+//
+//$(document).ready(function () {
+//    var websocket = new WebSocket("ws://localhost:8090/soketMessage");
+//    websocket.onopen = function (event) {
+//        showMessage("<div class='chat-connection-ack'>Connection is established!</div>");
+//    }
+//    websocket.onmessage = function (event) {
+//        var Data = JSON.parse(event.data);
+//        showMessage("<div class='" + Data.message_type + "'>" + Data.message + "</div>");
+//        $('#chat-message').val('');
+//    };
+//
+//    websocket.onerror = function (event) {
+//        showMessage("<div class='error'>Problem due to some Error</div>");
+//    };
+//    websocket.onclose = function (event) {
+//        showMessage("<div class='chat-connection-ack'>Connection Closed</div>");
+//    };
+//
+//    $('#frmChat').on("submit", function (event) {
+//        event.preventDefault();
+//        $('#chat-user').attr("type", "hidden");
+//        var messageJSON = {
+//            chat_user: $('#chat-user').val(),
+//            chat_message: $('#chat-message').val()
+//        };
+//        websocket.send(JSON.stringify(messageJSON));
+//    });
+//});

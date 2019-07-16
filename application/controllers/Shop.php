@@ -54,7 +54,10 @@ class Shop extends CI_Controller {
             "winner" => "",
             "message" => "",
             "game_player" => array(),
-            "my_player"=>"player1"
+            "my_player"=>"player1",
+            "animation"=>"zoomIn",
+            "animationInterval"=>"faster",
+            "sound"=>"yes"
         );
 
 
@@ -63,6 +66,7 @@ class Shop extends CI_Controller {
             $game["row"] = $matrix;
             $game["col"] = $matrix;
 
+            $game["my_player"] = $this->input->get('myplayer');
             $game["atom_size"] = $atom_array[$matrix];
 
             $players = $this->input->get('players');

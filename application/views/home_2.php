@@ -9,23 +9,10 @@ $this->load->view('layout/header');
         border: 1px solid #000;
     }
     .indexclass span {
-        position: absolute;
-        /* padding: 4px; */
-        /* float: left; */
-        border: none;
-        background-repeat: no-repeat!important;
-        background-size: cover!important;
-        height: 30px;
-        width: 30px;
-        /* left: 11%; */
-        /* top: 12%; */
-        /* margin: 20px auto; */
-        margin-top: 10px;
-        margin-left: -20px;
-        /* left: 0px; */
-        /* margin-left: 5px; */
-        transition: all 0.5s;
+        padding: 4px;
 
+        float: left;
+        border: none;
     }
     .matrixtable{
         width: 100%;
@@ -36,23 +23,17 @@ $this->load->view('layout/header');
         display: none;
         border: 1px solid #000;
         border-radius: 50%;
+    }
+    .indexclass i:nth-child(3) {
+
+        margin-left: -5px; 
+
+
 
     }
-    .indexclass span:nth-child(3) {
-        margin-top: 19px;
-        margin-left: -14px;
-    }
+    .indexclass i:nth-child(2) {
 
-    .indexclass span:nth-child(4) {
-        margin-top: -8px;
-        margin-left: -14px;
-    }
-
-
-
-    .indexclass span:nth-child(2) {
-
-        margin-left: -2px;
+        margin-left: -5px;
 
 
     }
@@ -95,13 +76,12 @@ $this->load->view('layout/header');
             <table class=" matrixtable animated bounceInUp">
                 <tr ng-repeat="row in []| range:matrix.row">
                     <td ng-repeat="col in []| range: matrix.col" id="{{$parent.$index}}{{$index}}" indexattr ="{{$parent.$index}}{{$index}}"  class="button button-small button-positive indexclass text-center" style="border: 3px solid {{matrix.nextColor}};">
+                        <span style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</span>
+                        <span class="matrix_element" ng-click="playMove($parent.$index, $index)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
+                            <i class="fa fa-circle fa-{{matrix.atom_size}} animated {{matrix.animation}} {{matrix.animationInterval}}" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="color:{{checkcolor}};line-height: {{matrix.colwidth}}px;"></i>
 
-                        <data style="display: none">{{checkcolor = matrix.gamemove[$parent.$index + '' + $index][0]}}</data>
-                        <div class="matrix_element" ng-click="playMove($parent.$index, $index)" style="height: {{matrix.colwidth}}px;width: {{matrix.colwidth}}px;"  class="">
-                            <span class="{{matrix.atom_size}} animated {{matrix.animation}} {{matrix.animationInterval}} ball_element" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="background:url(<?php echo base_url(); ?>assets/balls/{{checkcolor}}.png);line-height: {{matrix.colwidth}}px;"></span>
-
-                        </div>
-
+                            <i class="fa fa-circle fa-{{matrix.atom_size}} animated {{matrix.animation}} {{matrix.animationInterval}}" ng-repeat="atm in []| range: matrix.gamemove[$parent.$index + '' + $index].length" style="color:{{checkcolor}};line-height: {{matrix.colwidth}}px;"></i>
+                        </span>
                     </td>    
                 </tr>
 
@@ -115,6 +95,10 @@ $this->load->view('layout/header');
 
             </h2>
 
+            <div class="alert alert-warning alert-dismissible animated {{matrix.message}}" role="alert" ng-if="matrix.message" style="background: red">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong style="color:white">Invalid Move</strong> 
+            </div>
         </div>
         <div class="col-md-7">
             <ul class="list-group">
@@ -144,10 +128,6 @@ $this->load->view('layout/header');
     </audio>
     <audio id="gamewinner">
         <source src="<?php echo base_url(); ?>assets/sound/winner.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio id="gameerror">
-        <source src="<?php echo base_url(); ?>assets/sound/error.mp3" type="audio/mpeg">
     </audio>
 
 
@@ -198,10 +178,6 @@ $this->load->view('layout/header');
 <?php
 $this->load->view('layout/footer');
 ?>
-<script type = "text/javascript" 
-        src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js">
-</script>
-
 <script>
     var gameArray = <?php echo $gamearray; ?>;
     var gamestart = <?php echo $gameinit; ?>;</script>
