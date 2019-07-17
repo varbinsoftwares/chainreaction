@@ -18,6 +18,10 @@ class Shop extends CI_Controller {
             $this->mobile = 0;
         }
     }
+    
+    public function createRoom(){
+        
+    }
 
     public function index() {
         $data = array("gameinit" => "false");

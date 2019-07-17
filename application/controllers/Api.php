@@ -25,30 +25,41 @@ class Api extends REST_Controller {
             'session' => $this->post('session'),
         );
 
-        $this->db->insert('game_position', $sess_data);
-        $insert_post_id = $this->db->insert_id();
+        $this->db->where('session', $game_session);
+//        $this->db->where('player', $player);
+        $this->db->order_by('id desc');
+        $query = $this->db->get('game_position');
+        $checkrow = $query->row();
+        if ($checkrow) {
+            $this->db->set('move', $this->post('move'));
+            $this->db->set('player', $this->post('player'));
+            $this->db->where('session', $game_session);
+            $this->db->update('game_position');
+        } else {
+            $this->db->insert('game_position', $sess_data);
+            $insert_post_id = $this->db->insert_id();
+        }
+
+
 
         $this->response(array("game_position_id" => $insert_post_id));
     }
 
-    public function checkMove_get($player, $game_session){
+    public function checkMove_get($player, $game_session) {
         $this->db->where('session', $game_session);
-        $this->db->where('player', $player);
+//        $this->db->where('player', $player);
         $this->db->order_by('id desc');
         $query = $this->db->get('game_position');
         $checkrow = $query->row();
-        $this->response($checkrow);
+        if ($checkrow) {
+            $this->response($checkrow);
+        } else {
+            $this->response(array("move" => 0));
+        }
     }
-    
-    public function playerMoveCheck_get() {
 
-        $this->db->where('session', $this->get('session'));
-        $this->db->where('player', $this->get('player'));
-        $this->db->order_by('id desc');
-        $query = $this->db->get('game_position');
-        $checkrow = $query->row();
-
-        $this->response($checkrow);
+    public function playerMoveReset_get() {
+        $this->db->delete('game_position', array('session' => '1'));
     }
 
 }

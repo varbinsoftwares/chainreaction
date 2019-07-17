@@ -53,6 +53,10 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
         var maxwidth = $("table").width() - 50;
         var divider = $scope.matrix.col;
         $scope.matrix.colwidth = (maxwidth / divider);
+
+        var url = baseurl + "Api/playerMoveReset";
+        $http.get(url).then(function (rdata) {})
+
     });
     $scope.removeNoColor = function (checkcolor) {
         var output = $scope.matrix.colors.filter((e, i, l) => checkcolor.indexOf(e) == (-1))
@@ -276,18 +280,26 @@ App.controller('gameController', function ($scope, $http, $timeout, $interval, $
 //    }, 1000)
 
 
+
+    $scope.onlineMoveGet = function () {
+        var url = baseurl + "Api/checkMove/" + $scope.matrix.my_player + "/1";
+        $http.get(url).then(function (rdata) {
+            var gmove = rdata.data;
+
+            if (gmove.player != $scope.matrix.my_player) {
+                var ind1x = gmove.move[0];
+                var ind2x = gmove.move[1];
+                $scope.autoMove(ind1x, ind2x);
+            }
+
+        })
+    }
+
     $interval(function () {
 //        $scope.getRandonItem();
-         var url = baseurl + "Api/checkMove/"+$scope.matrix.my_player+"/1";
-        $http.get(url).then(function(rdata){
-            var gmove = rdata.data;
-            if(gmove.player == $scope.matrix.my_player){
-                
-            }
-            else{
-                
-            }
-        })
+        if ($scope.matrix.selectedPlayer != $scope.matrix.my_player) {
+            $scope.onlineMoveGet();
+        }
     }, 2000)
 
 })
